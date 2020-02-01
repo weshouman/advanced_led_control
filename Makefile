@@ -11,3 +11,6 @@ pkg_clean:
 pkg_test_upload:
 	python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
+pkg_upload:
+	python3 -m twine upload --repository-url https://pypi.org/ dist/*
+
