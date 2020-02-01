@@ -3,6 +3,9 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open('requirements.txt') as fh:
+    requirements = fh.read().splitlines()
+
 setuptools.setup(
     name="advanced-led-control-weshouman", # Replace with your own username
     version="0.1.0",
