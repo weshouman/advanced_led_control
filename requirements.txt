@@ -1,1 +1,1 @@
-blinkstick
+BlinkStick==1.1.8
