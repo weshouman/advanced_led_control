@@ -5,7 +5,8 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="advanced-led-control-weshouman", # Replace with your own username
-    version="0.0.1",
+    version="0.1.0",
+    install_requires=requirements,
     author="Walid Shouman",
     author_email="eng.walidshouman@gmail.com",
     description="An non-official advanced controller for blinkstick",
