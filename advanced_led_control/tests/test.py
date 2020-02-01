@@ -25,9 +25,12 @@ indic2 = Indicator(m_col=c.GREEN, func=indic2_func, i_time=4)
 
 stick = blinkstick.find_first()
 # Use a sync_duration of at least 1.2 total indication time to count for the
-# delay the pulses make, and if it's less than the total indication time, 
-# it will be almost useless
-# zero sync_duration, means sync is disabled
+#     delay the pulses make, and if it's less than the total indication time, 
+#     it will be almost useless
+# NOTE: zero sync_duration, means sync is disabled
+# NOTE: LED_1 isn't supported as a mode led,
+#       as the blinkstick doesn't allow flickering the second led
+#       while the first is set constantly
 procedure = Procedure(stick=stick, mode_led=LED_2, quiet=10, sync_duration=10)
 
 procedure.indicators.append(indic1)
