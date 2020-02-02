@@ -25,7 +25,6 @@ class Procedure:
 		init_stick()
 
 		killer = GracefulKiller()
-		logging.basicConfig(level=logging.DEBUG)
 	
 		register_graceful_shutdown(self.stick)
 
@@ -34,15 +33,15 @@ class Procedure:
 				logging.debug("Start procedure loop")
 
 				if (self.sync_duration > 0):
-					start_at_sync_seconds(self.sync_duration)
+					start_at_sync_time(self.sync_duration)
 
 				for indicator in self.indicators:
 					activeness = self.get_active_time(indicator.i_time)
-					logging.debug("Indicating active for %f", activeness)
+					logging.debug("Indicating active for %fs", activeness)
 					indicator.indicate(self.stick, self.mode_led, activeness)
 
 					quietness = self.get_quiet_time(indicator.i_time)
-					logging.debug("Sleeping for %f", quietness)
+					logging.debug("Sleeping for %fs", quietness)
 					turn_off_stick(self.stick)
 					time.sleep(quietness)
 

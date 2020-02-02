@@ -9,7 +9,11 @@ from advanced_led_control.models.ValueIndication import *
 from advanced_led_control.models.Indicator       import *
 from advanced_led_control.models.Procedure       import *
 
+import logging
+
 HelloWorld()
+
+logging.basicConfig(level=logging.INFO)
 
 def indic1_func():
 	# Indication values are best shown between 1 and 10

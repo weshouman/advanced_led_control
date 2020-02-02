@@ -48,19 +48,19 @@ sudo venv/bin/python test.py
 
 #### Configuration
 ##### Indicator Params
-- ```m_col```: the indication mode color, use a list of 3 vals in RGB ie, [10, 0, 0]
+- ```m_col```: the indication mode color, use a list of 3 vals in RGB ie, [10, 0, 0].
 
-- ```func```: a callback that will be called to evaluate the color and flickering for the value led
+- ```func```: a callback that will be called to evaluate the color and flickering for the value led.
 
-- ```i_time```: indication time, is how much time is allocated for this mode
+- ```i_time```: indication time, is how much time is allocated for this mode.
 
 ##### Indicator Callback
 Returns
-- ```color```: the indication value color, use a list of 3 vals in RGB ie. [0, 10, 0]
+- ```color```: the indication value color, use a list of 3 vals in RGB ie. [0, 10, 0].
 - ```flickering```: an integer that shows the speed of flickering of this color,
      the higher the value the faster the flickering.
-     Recommended Values are between [1 and 20].
-     Use ```NO_FLICKER``` or ```1000``` to set the led on without flickering.
+     Recommended Values are in range [1, 20].
+     Use ```NO_FLICKER``` or ```1001``` to set the led on without flickering.
 
 ##### Procedure Params
 - ```mode_led```: Choose between ```LED_1``` and ```LED_2```, currently ```LED_1``` isn't supported
@@ -70,7 +70,7 @@ Returns
 
 - ```quiet```: A percentage to be taken from the indication time for the stick to shutdown.  
      Setting ```quiet=0``` will disable this feature,
-     and force all the indications to run consecutively.
+     and force all the indications to run consecutively.  
      Setting ```quiet=100``` is useless, as it will take all the indication time as a break!
 
 - ```sync_duration```: Allows starting the procedure at a specific second,
@@ -80,7 +80,7 @@ Returns
     Use a ```sync_duration``` of at least 1.2 total indication time to count for the
     delay the pulses make, and if it's less than the total indication time,
     it will be almost useless.  
-    NOTE: Set ```sync_duration=0``` to disable this feature.
+    NOTE: Set ```sync_duration=0``` to disable this feature.  
     NOTE: Setting ```sync_duration``` to say 8 will start at every eighth second,
           In example, [0, 8, 16, 24, 32 ...]
 
