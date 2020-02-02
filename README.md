@@ -48,19 +48,24 @@ sudo venv/bin/python test.py
 
 #### Configuration
 ##### Indicator Params
-- ```m_col```: the indication mode color, use a list of 3 vals in RGB ie, [10, 0, 0].
-
+- ```m_col```: the indication mode color, based on any of the color types defined below  
 - ```func```: a callback that will be called to evaluate the color and flickering for the value led.
-
 - ```i_time```: indication time, is how much time is allocated for this mode.
 
 ##### Indicator Callback
 Returns
-- ```color```: the indication value color, use a list of 3 vals in RGB ie. [0, 10, 0].
+- ```color```: the indication value color, based on any of the color types defined below  
+     NOTE: CSS names don't work with flickering, follow this [report](https://forums.blinkstick.com/t/python-api-colornames-not-working-with-pulse/1311?u=eng.walidshouman)
 - ```flickering```: an integer that shows the speed of flickering of this color,
      the higher the value the faster the flickering.
      Recommended Values are in range [1, 20].
      Use ```NO_FLICKER``` or ```1001``` to set the led on without flickering.
+
+##### Color Type
+An indication color is either one of the 3 types
+- ```RGB```: a list of 3 vals in RGB ie. [0, 10, 0].
+- ```HEX```: a string ie. '#00ffff'.
+- ```CSS_NAME````: a string ie. 'aliceblue'.
 
 ##### Procedure Params
 - ```mode_led```: Choose between ```LED_1``` and ```LED_2```, currently ```LED_1``` isn't supported

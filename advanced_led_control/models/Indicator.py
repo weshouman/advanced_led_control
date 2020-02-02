@@ -1,5 +1,6 @@
 from .colors import *
 from .modes import *
+from .color_types import *
 
 import time
 import logging
@@ -19,18 +20,16 @@ class Indicator:
 		self.func       = func
 		self.i_time     = i_time # indication time in seconds
 
-
 	def indicate(self, stick, mode_led, active_time):
-		col = get_rgb(self.m_col))
+		col = self.m_col
 		val_led = 1-mode_led
 
-		curr_col = stick.get_color()
-		if curr_col != col:
-			stick.set_color(index=mode_led, red=col[0], green=col[1], blue=col[2])
+		col_type = get_col_type(col)
+		set_color(stick=stick, index=mode_led, col=col, col_type=col_type)
 
 		# Run the callback
 		value_indication = self.func()
-		col = get_rgb(value_indication.col)
+		col = value_indication.col
 		flicker = value_indication.flicker
 
 		logging.debug("Indication Callback returned color: %s, flicker: %d",
@@ -46,7 +45,8 @@ class Indicator:
 		# but rather based on the MIN_FLICKER_DURATION
 		#if (flicker > FLICKER_MAX or flicker_time == MIN_FLICKER_DURATION):
 			logging.info("Fixed for %1.2fs", active_time)
-			stick.set_color(index=val_led, red=col[0], green=col[1], blue=col[2])
+			col_type = get_col_type(col)
+			set_color(stick=stick, index=val_led, col=col, col_type=col_type)
 			time.sleep(active_time)
 
 		else:
@@ -61,10 +61,10 @@ class Indicator:
 			# TODO:start pulsing in a different thread and stop it when exact active_time is over
 			logging.debug("Flickering for %d times, with duration %dms each on and each off",
 										repeats, one_flicker)
-			stick.pulse(index=val_led, red=col[0], green=col[1], blue=col[2],
-									repeats=int(repeats), duration=int(one_flicker), steps=10)
+			set_pulse(stick=stick, index= val_led, col=col, col_type=col_type,
+								repeats=int(repeats), duration=int(one_flicker), steps=10)
 
-
+# Deprecated
 def get_rgb(col):
 	"""Change to RGB if needed
 	@param col: either hexadecimal or RGB
@@ -75,3 +75,41 @@ def get_rgb(col):
 		return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
 	else:
 		return col
+
+def get_col_type(col):
+	if isinstance(col, str):
+		if col.startswith('#'):
+			return CT_HEX
+		else:
+			return CT_NAME
+	elif len(col) == 3:
+		return CT_RGB
+	else:
+		# panic
+		logging.error("Unsupported color type!")
+		return CT_DEFAULT
+
+def set_color(stick, index, col, col_type):
+	if (col_type == CT_RGB):
+		curr_col = stick.get_color(index=index, color_format='rgb')
+		if curr_col != col:
+			stick.set_color(index=index, red=col[0], green=col[1], blue=col[2])
+	elif (col_type == CT_NAME):
+		# This codebase doesn't have the mappings for the CSS names
+		# and blinkstick doesn't expose it AFAIK
+		stick.set_color(index=index, name=col)
+	elif (col_type == CT_HEX):
+		curr_col = stick.get_color(index=index, color_format='hex')
+		if curr_col != col:
+			stick.set_color(index=index, hex=col)
+
+def set_pulse(stick, index, col, col_type, repeats, duration, steps):
+	if (col_type == CT_RGB):
+		stick.pulse(index=index, red=col[0], green=col[1], blue=col[2],
+								repeats=repeats, duration=duration, steps=steps)
+	elif (col_type == CT_NAME):
+		stick.pulse(index=index, name=col,
+								repeats=repeats, duration=duration, steps=steps)
+	elif (col_type == CT_HEX):
+		stick.pulse(index=index, hex=col,
+								repeats=repeats, duration=duration, steps=steps)
