@@ -61,6 +61,7 @@ class Indicator:
 			# TODO:start pulsing in a different thread and stop it when exact active_time is over
 			logging.debug("Flickering for %d times, with duration %dms each on and each off",
 										repeats, one_flicker)
+			col_type = get_col_type(col)
 			set_pulse(stick=stick, index= val_led, col=col, col_type=col_type,
 								repeats=int(repeats), duration=int(one_flicker), steps=10)
 
