@@ -50,6 +50,7 @@ sudo venv/bin/python test.py
 ##### Indicator Params
 - ```m_col```: the indication mode color, based on any of the color types defined below  
 - ```func```: a callback that will be called to evaluate the color and flickering for the value led.
+- ```brightness```: a value in range [0, 1] that gets multiplied by both the mode and value indication.
 - ```i_time```: indication time, is how much time is allocated for this mode.
 
 ##### Indicator Callback

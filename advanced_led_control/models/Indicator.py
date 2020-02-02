@@ -5,6 +5,8 @@ from .color_types import *
 import time
 import logging
 
+from blinkstick import blinkstick
+
 NO_FLICKER = 1001
 FLICKER_MAX = 1000
 MIN_FLICKER_DURATION = 30 # ms, consists of both on and off time
@@ -16,7 +18,7 @@ class Indicator:
 	def __init__(self, m_col=GREEN, speed=1, brightness=1, func=None, i_time=4):
 		self.m_col      = m_col # mode color
 		self.speed      = speed
-		self.brightness = brightness
+		self.brightness = min(max(brightness,0), 1) # valid range [0, 1]
 		self.func       = func
 		self.i_time     = i_time # indication time in seconds
 
@@ -45,7 +47,9 @@ class Indicator:
 		# but rather based on the MIN_FLICKER_DURATION
 		#if (flicker > FLICKER_MAX or flicker_time == MIN_FLICKER_DURATION):
 			logging.info("Fixed for %1.2fs", active_time)
+			col = get_rgb(col) # enforce using rgb
 			col_type = get_col_type(col)
+			col = get_brightness_mod(col, self.brightness)
 			set_color(stick=stick, index=val_led, col=col, col_type=col_type)
 			time.sleep(active_time)
 
@@ -61,21 +65,38 @@ class Indicator:
 			# TODO:start pulsing in a different thread and stop it when exact active_time is over
 			logging.debug("Flickering for %d times, with duration %dms each on and each off",
 										repeats, one_flicker)
+			col = get_rgb(col) # enforce using rgb
 			col_type = get_col_type(col)
+			col = get_brightness_mod(col, self.brightness)
 			set_pulse(stick=stick, index= val_led, col=col, col_type=col_type,
 								repeats=int(repeats), duration=int(one_flicker), steps=10)
 
-# Deprecated
+def get_brightness_mod(col, brightness):
+	rgb_col = get_rgb(col)
+	#return map(lambda x: x * float(brightness), rgb_col)
+	return [x * float(brightness) for x in rgb_col]
+
 def get_rgb(col):
 	"""Change to RGB if needed
 	@param col: either hexadecimal or RGB
 	@return: RGB format
 	"""
-	if isinstance(col, str):
-		h = col.lstrip('#')
-		return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
-	else:
+	col_type = get_col_type(col)
+
+	if col_type == CT_HEX:
+		return hex_to_rgb(col)
+
+	elif col_type == CT_NAME:
+		stick = blinkstick.BlinkStick()
+		h = stick._names_to_hex[col]
+		return hex_to_rgb(h)
+
+	elif col_type == CT_RGB:
 		return col
+
+def hex_to_rgb(hex_col):
+	h = hex_col.lstrip('#')
+	return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
 
 def get_col_type(col):
 	if isinstance(col, str):
@@ -91,26 +112,49 @@ def get_col_type(col):
 		return CT_DEFAULT
 
 def set_color(stick, index, col, col_type):
+	""" Set blinkstick color
+	Only RGB is used to be able to further control the brightness
+	
+	Arguments:
+			stick {BlinkStick} -- [description]
+			index {int} -- led to set
+			col {list|string} -- either list of RGB or hex string or CSS name string 
+			col_type {int} -- either CT_RGB, CT_HEX or CT_NAME
+	"""
 	if (col_type == CT_RGB):
 		curr_col = stick.get_color(index=index, color_format='rgb')
 		if curr_col != col:
 			stick.set_color(index=index, red=col[0], green=col[1], blue=col[2])
-	elif (col_type == CT_NAME):
+	elif (col_type == CT_NAME): # deprecated
 		# This codebase doesn't have the mappings for the CSS names
 		# and blinkstick doesn't expose it AFAIK
 		stick.set_color(index=index, name=col)
-	elif (col_type == CT_HEX):
+	elif (col_type == CT_HEX): # deprecated
 		curr_col = stick.get_color(index=index, color_format='hex')
 		if curr_col != col:
 			stick.set_color(index=index, hex=col)
 
 def set_pulse(stick, index, col, col_type, repeats, duration, steps):
+	""" Pulse the blinkstick
+	CSS names are problematic here, Don't work!
+	so we either convert to HEX or RGB, we decided to use RGB for further control
+	of brightness
+
+	Arguments:
+			stick {BlinkStick} -- [description]
+			index {int} -- led to set
+			col {list|string} -- either list of RGB or hex string or CSS name string 
+			col_type {int} -- either CT_RGB, CT_HEX or CT_NAME
+			repeats {int} -- number of pulses
+			duration {int} -- on/off time in ms 
+			steps {int} -- gradiant steps for each pulse
+	"""
 	if (col_type == CT_RGB):
 		stick.pulse(index=index, red=col[0], green=col[1], blue=col[2],
 								repeats=repeats, duration=duration, steps=steps)
-	elif (col_type == CT_NAME):
+	elif (col_type == CT_NAME): # deprecated
 		stick.pulse(index=index, name=col,
 								repeats=repeats, duration=duration, steps=steps)
-	elif (col_type == CT_HEX):
+	elif (col_type == CT_HEX): # deprecated
 		stick.pulse(index=index, hex=col,
 								repeats=repeats, duration=duration, steps=steps)
