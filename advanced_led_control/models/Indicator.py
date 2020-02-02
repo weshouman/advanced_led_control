@@ -126,9 +126,11 @@ def set_color(stick, index, col, col_type):
 		if curr_col != col:
 			stick.set_color(index=index, red=col[0], green=col[1], blue=col[2])
 	elif (col_type == CT_NAME): # deprecated
-		# This codebase doesn't have the mappings for the CSS names
-		# and blinkstick doesn't expose it AFAIK
-		stick.set_color(index=index, name=col)
+		# comparison takes place in the hex domain
+		curr_col = stick.get_color(index=index, color_format='hex')
+		col = stick._names_to_hex[col]
+		if curr_col != col:
+			stick.set_color(index=index, hex=col)
 	elif (col_type == CT_HEX): # deprecated
 		curr_col = stick.get_color(index=index, color_format='hex')
 		if curr_col != col:
