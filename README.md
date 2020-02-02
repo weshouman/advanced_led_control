@@ -66,7 +66,7 @@ Returns
 An indication color is either one of the 3 types
 - ```RGB```: a list of 3 vals in RGB ie. [0, 10, 0].
 - ```HEX```: a string ie. '#00ffff'.
-- ```CSS_NAME````: a string ie. 'aliceblue'.
+- ```CSS_NAME```: a string ie. 'aliceblue'.
 
 ##### Procedure Params
 - ```mode_led```: Choose between ```LED_1``` and ```LED_2```, currently ```LED_1``` isn't supported
