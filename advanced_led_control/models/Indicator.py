@@ -21,7 +21,7 @@ class Indicator:
 
 
 	def indicate(self, stick, mode_led, active_time):
-		col = self.m_col
+		col = get_rgb(self.m_col))
 		val_led = 1-mode_led
 
 		curr_col = stick.get_color()
@@ -30,7 +30,7 @@ class Indicator:
 
 		# Run the callback
 		value_indication = self.func()
-		col = value_indication.col
+		col = get_rgb(value_indication.col)
 		flicker = value_indication.flicker
 
 		logging.debug("Indication Callback returned color: %s, flicker: %d",
@@ -63,3 +63,15 @@ class Indicator:
 										repeats, one_flicker)
 			stick.pulse(index=val_led, red=col[0], green=col[1], blue=col[2],
 									repeats=int(repeats), duration=int(one_flicker), steps=10)
+
+
+def get_rgb(col):
+	"""Change to RGB if needed
+	@param col: either hexadecimal or RGB
+	@return: RGB format
+	"""
+	if isinstance(col, str):
+		h = col.lstrip('#')
+		return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+	else:
+		return col
