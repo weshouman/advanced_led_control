@@ -8,7 +8,7 @@ with open('requirements.txt') as fh:
 
 setuptools.setup(
     name="advanced-led-control", # Replace with your own username
-    version="0.2.0",
+    version="0.3.0",
     install_requires=requirements,
     author="Walid Shouman",
     author_email="eng.walidshouman@gmail.com",
