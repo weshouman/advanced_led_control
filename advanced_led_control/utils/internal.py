@@ -16,6 +16,7 @@ WS2812_MODE  = 2
 
 def init_stick():
 	nano = blinkstick.find_first()
+	# TODO: handle if stick wasn't recognized
 	nano.set_mode(WS2812_MODE)
 	time.sleep(INIT_SLEEP)
 
