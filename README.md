@@ -45,6 +45,7 @@ source venv/bin/activate
 # Follow this [answer](https://stackoverflow.com/a/50335946/2730737) for why we need to use fully qualified path with sudo
 sudo venv/bin/python test.py
 ```
+If you are using sudo natively, run ```sudo -E python test.py```
 
 #### Configuration
 ##### Indicator Params
