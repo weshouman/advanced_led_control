@@ -47,6 +47,7 @@ class Procedure:
 
 					# turn_off doesn't automatically recognize all the leds
 					if killer.kill_now:
+						# Only stop between indicator runs
 						break
 
 			except Exception as e:
@@ -55,6 +56,11 @@ class Procedure:
 				print >> sys.stderr, "Exiting for exception."
 				print >> sys.stderr, "Exception: %s" % str(e)
 				sys.exit(1)
+
+			if killer.kill_now:
+				# End the loop if the signal is received
+				break
+
 
 		turn_off_stick(self.stick)
 
